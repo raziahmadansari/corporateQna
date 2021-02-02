@@ -1,0 +1,77 @@
+<div class="container-fluid bottom-shadow">
+    <form #categoryForm="ngForm" (change)="filterCategoryList(categoryForm)">
+        <div class="filter-bar">
+            <div class="d-flex align-items-end">
+                <div class="filter">
+                    <p class="filter-title">Categories</p>
+                    <span class="searchbox">
+                        <input #categorySearchInput ngModel name="searchText" type="text" placeholder="Search">
+                    </span>
+                </div>
+                <div class="filter mx-3">
+                    <p class="filter-title">Show</p>
+                    <select [ngModel]="'All'" name="category" id="category">
+                        <option [value]="'All'">All</option>
+                        <option [value]="'Popular'">Popular</option>
+                        <option *ngFor="let category of allCategories" [value]="category.id">{{ category.name }}</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="reset" class="btn btn-reset" (click)="resetFilterForm(categoryForm)">Reset</button>
+                </div>
+            </div>
+            <div>
+                <button class="btn btn-new-question" (click)="open(content)">+ Category</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- categories tab -->
+<div class="container-fluid d-flex flex-wrap py-3">
+    <div class="keka-card" *ngFor="let category of categories">
+        <div class="keka-card-header">
+            <div class="keka-card-title">
+                <span>{{ category.name }}</span>
+            </div>
+            <div class="keka-card-tags">
+                <span>({{ category.total }})</span>
+            </div>
+        </div>
+        <div class="keka-card-body">
+            <p class="text-12 text-faded m-0">{{ category.description }}</p>
+        </div>
+        <div class="keka-card-footer">
+            <span class="text-12 text-faded">Tagged {{ category.thisWeek }} this week, {{ category.thisMonth }} this
+                month</span>
+        </div>
+    </div>
+</div>
+<!-- Add new Category Modal -->
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title-sm" id="modal-basic-title">Add Category</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #newCategory="ngForm">
+            <div class="form-group">
+                <label class="label-modal">Category</label>
+                <input class="question-input-field" type="text" ngModel name="name" placeholder="Enter Category name">
+            </div>
+            <div class="form-group m-0">
+                <label class="label-modal">Description</label>
+                <div>
+                    <textarea class="description-box" ngModel name="description"
+                        placeholder="Enter your text here"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close(newCategory.value)">Save</button>
+    </div>
+</ng-template>
+<!-- Add new Category Modal end -->

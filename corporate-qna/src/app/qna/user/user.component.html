@@ -1,0 +1,198 @@
+<div class="container-fluid my-3">
+    <div class="d-flex align-items-center text-purple cursor-pointer">
+        <i class="fas fa-arrow-left mr-2"></i>
+        <span class="text-12" routerLink="/qna/users">Back to Users</span>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="d-flex border p-3 bg-white">
+        <div class="mr-2">
+            <img class="profile-pic-xl" src="https://i.pravatar.cc/50" alt="user-image">
+        </div>
+        <div class="keka-user-card-info mr-5">
+            <h5 class="mb-1 text-14">{{ userDetail?.name }}</h5>
+            <p class="m-0 text-12 text-faded">{{ userDetail?.designation }} - {{ userDetail?.team }}</p>
+            <p class="mb-2 text-12 text-faded">{{ userDetail?.category }}, {{ userDetail?.location }}</p>
+            <div class="like-dislike-panel mb-2">
+                <span class="pr-2 like-button">
+                    <i class="fas fa-thumbs-up text-green"></i>&nbsp;<span class="text-12">{{ userDetail?.likes }}</span>
+                </span>
+                <span class="dislike-button">
+                    <i style="transform: scaleX(-1);" class="fas fa-thumbs-down text-danger"></i>&nbsp;<span
+                        class="text-12">{{ userDetail?.dislikes }}</span>
+                </span>
+            </div>
+        </div>
+        <div class="d-flex">
+            <div style="border: 1px solid transparent; width: 150px; background-color: #F4F5F8; border-radius: 3px;"
+                class="d-flex flex-column justify-content-center p-2 mr-3">
+                <p class="text-14 text-center mb-1 font-weight-bold">{{ userDetail?.questionsAsked }}</p>
+                <p class="text-12 text-faded text-center mb-0">Questions Asked</p>
+            </div>
+            <div style="border: 1px solid transparent; width: 150px; background-color: #F4F5F8; border-radius: 3px;"
+                class="d-flex flex-column justify-content-center p-2 mr-3">
+                <p class="text-14 text-center mb-1 font-weight-bold">{{ userDetail?.questionsAnswered }}</p>
+                <p class="text-12 text-faded text-center mb-0">Questions Answered</p>
+            </div>
+            <div style="border: 1px solid transparent; width: 150px; background-color: #F4F5F8; border-radius: 3px;"
+                class="d-flex flex-column justify-content-center p-2 mr-3">
+                <p class="text-14 text-center mb-1 font-weight-bold">{{ userDetail?.questionsSolved }}</p>
+                <p class="text-12 text-faded text-center mb-0">Questions Solved</p>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex align-items-center border-left border-right border-bottom bg-white">
+        <!-- all questions and answered button section -->
+        <div class="d-inline-block p-2 text-faded active-tab cursor-pointer" name="questionTabs"
+            (click)="activate($event, 'questions')">
+            <p class="m-0 text-14" style="pointer-events: none;">All Questions</p>
+        </div>
+        <div class="d-inline-block p-2 text-faded cursor-pointer" name="questionTabs"
+            (click)="activate($event, 'answers')">
+            <p class="m-0 text-14" style="pointer-events: none;">Answered</p>
+        </div>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <!-- questions list start-->
+    <div class="question-section mx-0">
+        <div class="left-question-section" #questionsSection>
+            <div class="question" [ngClass]="{'active-question': question.id == activeQuestionId}"
+                *ngFor="let question of questions">
+                <div [ngClass]="{'solved': question.solved}"></div>
+                <div class="question-overview">
+                    <!-- profile pic -->
+                    <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                    <!-- upvotes -->
+                    <div class="cursor-pointer" (click)="countUpvote(question.id)">
+                        <i class="fas fa-chevron-up d-block mt-3 text-faded"></i>
+                        <p class="mb-2">{{ question.upVotes }}</p>
+                    </div>
+                </div>
+                <div class="question-details w-100">
+                    <h6 class="question-asked cursor-pointer" (click)="ActiveQuestion(question.id)">{{ question.question
+                        }}</h6>
+                    <p class="question-description">{{ question.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center question-state">
+                        <div>
+                            <i class="fas fa-eye"></i>
+                            <span class="question-views">&nbsp;{{ question.views }} views</span>
+                            <span class="question-answers">{{ question.answers }} Answers</span>
+                        </div>
+                        <div>
+                            <span class="answered-at" *ngIf="!question.solved">{{ question.timeStamp | dateAgo }}</span>
+                            <span class="text-green font-weight-bold" *ngIf="question.solved">Resolved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="left-question-section d-none" #answersSection>
+            <div class="question" [ngClass]="{'active-question': question.id == activeQuestionId}"
+                *ngFor="let question of answeredQuestions">
+                <div [ngClass]="{'solved': question.solved}"></div>
+                <div class="question-overview">
+                    <!-- profile pic -->
+                    <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                    <!-- upvotes -->
+                    <div class="cursor-pointer" (click)="countUpvote(question.id)">
+                        <i class="fas fa-chevron-up d-block mt-3 text-faded"></i>
+                        <p class="mb-2">{{ question.upVotes }}</p>
+                    </div>
+                </div>
+                <div class="question-details w-100">
+                    <h6 class="question-asked cursor-pointer" (click)="ActiveAnsweredQuestion(question.id)">{{ question.question
+                        }}</h6>
+                    <p class="question-description">{{ question.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center question-state">
+                        <div>
+                            <i class="fas fa-eye"></i>
+                            <span class="question-views">&nbsp;{{ question.views }} views</span>
+                            <span class="question-answers">{{ question.answers }} Answers</span>
+                        </div>
+                        <div>
+                            <span class="answered-at" *ngIf="!question.solved">{{ question.timeStamp | dateAgo }}</span>
+                            <span class="text-green font-weight-bold" *ngIf="question.solved">Resolved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-question-section">
+            <div *ngIf="activeQuestion">
+                <div class="p-3">
+                    <div class="wrapper">
+                        <div class="right-question-header d-flex justify-content-between align-items-center mb-2">
+                            <div class="left-panel">
+                                <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                                <span class="name pr-2">{{activeQuestion.name}}</span>
+                                <span class="asked-at text-faded">{{activeQuestion.timeStamp | dateAgo}}</span>
+                            </div>
+                            <div class="right-panel">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>Report this</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="question-asked">{{ activeQuestion.question }}</h6>
+                            <p class="question-description m-0">{{ activeQuestion.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-3 py-1 number-of-answers">
+                    <p class="m-0">Answers ({{ activeQuestion?.answers }})</p>
+                </div>
+                <!-- answers list -->
+                <div class="p-3 answers-list" *ngFor="let solution of solutions">
+                    <div class="profile-panel">
+                        <!-- profile pic -->
+                        <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                    </div>
+                    <div class="content-panel">
+                        <div class="user-info-header">
+                            <div class="user-info-panel">
+                                <span class="text-14 pr-2">{{ solution.name }}</span>
+                                <span class="text-12 text-faded">{{ solution.timeStamp | dateAgo }}</span>
+                            </div>
+                            <div class="like-dislike-panel">
+                                <!-- like and dislike button -->
+                                <span class="pr-2 like-button" (click)="likeDislike(solution.id, true)">
+                                    <i class="fas fa-thumbs-up text-green"></i>&nbsp;<span class="text-12">{{
+                                        solution.likes }}</span>
+                                </span>
+                                <span class="dislike-button" (click)="likeDislike(solution.id, false)">
+                                    <i style="transform: scaleX(-1);"
+                                        class="fas fa-thumbs-down text-danger"></i>&nbsp;<span class="text-12">{{
+                                        solution.disLikes }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="answer">
+                            <!-- answers -->
+                            <p class="text-12">{{ solution.answer }}</p>
+                        </div>
+                        <div>
+                            <label class="container-checkbox text-small">Mark as best solution
+                                <input type="checkbox" [checked]="solution.bestSolution" name="markAsBest"
+                                    [disabled]="!isQuestionAskedBySameUser" (click)="checked($event, solution.id)">
+                                <span class="checkmark"
+                                    [ngClass]="{'cursor-not-allowed': !isQuestionAskedBySameUser}"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- answers list end -->
+            </div>
+            <div *ngIf="!activeQuestion">
+                <!-- Display select question to view -->
+                <div class="text-center mt-5">
+                    <i class="fas fa-3x fa-arrow-left text-faded mb-3"></i>
+                    <h5 class="text-faded">Click on a question to see all the details</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- questions list end -->
+</div>

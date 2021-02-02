@@ -1,0 +1,209 @@
+<div class="container-fluid bottom-shadow">
+    <form #filterFormData="ngForm" (change)="filterQuestionList(filterFormData)">
+        <div class="filter-bar">
+            <div class="filter">
+                <p class="filter-title">Keywords</p>
+                <span class="searchbox">
+                    <input #questionSearchInput ngModel name="searchText" type="text" placeholder="Search">
+                </span>
+            </div>
+            <div class="filter">
+                <p class="filter-title">Category</p>
+                <select [ngModel]="'All'" name="filterCategory" id="filterCategory">
+                    <option [value]="'All'">All</option>
+                    <option *ngFor="let category of categories" [value]="category.id">{{ category.name }}</option>
+                </select>
+            </div>
+            <div class="filter">
+                <p class="filter-title">Show</p>
+                <select [ngModel]="'All'" name="show" id="show">
+                    <option *ngFor="let show of filter.fShow" [value]="show">{{ show }}</option>
+                </select>
+            </div>
+            <div class="filter">
+                <p class="filter-title">Sort By</p>
+                <select [ngModel]="'All'" name="sortby" id="sortby">
+                    <option *ngFor="let val of filter.fSortBy" [value]="val">{{ val }}</option>
+                </select>
+            </div>
+            <div>
+                <button type="reset" class="btn btn-reset" (click)="resetFilterForm(filterFormData)">Reset</button>
+            </div>
+            <div>
+                <button class="btn btn-new-question" (click)="open(content)">+ Question</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- Add new Question Modal -->
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title-sm" id="modal-basic-title">Add Question</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form #newQuestion="ngForm">
+            <div class="form-group">
+                <label class="label-modal">Question</label>
+                <input class="question-input-field" type="text" ngModel name="question"
+                    placeholder="Enter Your Question" required>
+            </div>
+            <div class="form-group">
+                <label class="label-modal">Description</label>
+                <div class="ngx-editor-modal">
+                    <div class="NgxEditor__Wrapper">
+                        <ngx-editor [editor]="editorModal" name="description" [(ngModel)]="htmlQuestionDescription"
+                            [placeholder]="placeholderQuestionModal" required></ngx-editor>
+                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="label-modal">Category</label>
+                <select class="question-category-field" ngModel name="category" id="category" required>
+                    <option value="" disabled selected hidden>Please Choose...</option>
+                    <option *ngFor="let category of categories" value="{{ category.id }}">{{ category.name }}</option>
+                </select>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
+        <button type="submit" class="btn btn-outline-dark" (click)="modal.close(newQuestion.value)"
+            [disabled]="newQuestion.invalid">Post</button>
+        <!-- <button type="submit" class="btn btn-outline-dark">Post</button> -->
+    </div>
+</ng-template>
+<!-- Add new Question Modal end -->
+<div class="container-fluid">
+    <!-- questions list start-->
+    <div class="question-section">
+        <div class="left-question-section">
+            <div class="question" [ngClass]="{'active-question': question.id == activeQuestionId}"
+                *ngFor="let question of questions">
+                <div [ngClass]="{'solved': question.solved}"></div>
+                <div class="question-overview">
+                    <!-- profile pic -->
+                    <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                    <!-- upvotes -->
+                    <div class="cursor-pointer" (click)="countUpvote(question.id)">
+                        <i class="fas fa-chevron-up d-block mt-3 text-faded"></i>
+                        <p class="mb-2">{{ question.upVotes }}</p>
+                    </div>
+                </div>
+                <div class="question-details w-100">
+                    <h6 class="question-asked cursor-pointer" (click)="ActiveQuestion(question.id)">{{ question.question
+                        }}</h6>
+                    <p class="question-description">{{ question.description }}</p>
+                    <div class="d-flex justify-content-between align-items-center question-state">
+                        <div>
+                            <i class="fas fa-eye"></i>
+                            <span class="question-views">&nbsp;{{ question.views }} views</span>
+                            <span class="question-answers">{{ question.answers }} Answers</span>
+                        </div>
+                        <div>
+                            <span class="answered-at" *ngIf="!question.solved">{{ question.timeStamp | dateAgo }}</span>
+                            <span class="text-green font-weight-bold" *ngIf="question.solved">Resolved</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="right-question-section">
+            <div *ngIf="activeQuestion">
+                <div class="p-3">
+                    <div class="wrapper">
+                        <div class="right-question-header d-flex justify-content-between align-items-center mb-2">
+                            <div class="left-panel">
+                                <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                                <span class="name pr-2">{{activeQuestion.name}}</span>
+                                <span class="asked-at text-faded">{{activeQuestion.timeStamp | dateAgo}}</span>
+                            </div>
+                            <div class="right-panel">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span>Report this</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h6 class="question-asked">{{ activeQuestion.question }}</h6>
+                            <p class="question-description m-0">{{ activeQuestion.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-3 py-1 number-of-answers">
+                    <p class="m-0">Answers ({{ activeQuestion?.answers }})</p>
+                </div>
+                <!-- answers list -->
+                <div class="p-3 answers-list" *ngFor="let solution of solutions">
+                    <div class="profile-panel">
+                        <!-- profile pic -->
+                        <img class="profile-pic-sm" src="https://i.pravatar.cc/50" alt="user-image">
+                    </div>
+                    <div class="content-panel">
+                        <div class="user-info-header">
+                            <div class="user-info-panel">
+                                <span class="text-14 pr-2">{{ solution.name }}</span>
+                                <span class="text-12 text-faded">{{ solution.timeStamp | dateAgo }}</span>
+                            </div>
+                            <div class="like-dislike-panel">
+                                <!-- like and dislike button -->
+                                <span class="pr-2 like-button" (click)="likeDislike(solution.id, true)">
+                                    <i class="fas fa-thumbs-up text-green"></i>&nbsp;<span class="text-12">{{
+                                        solution.likes }}</span>
+                                </span>
+                                <span class="dislike-button" (click)="likeDislike(solution.id, false)">
+                                    <i style="transform: scaleX(-1);"
+                                        class="fas fa-thumbs-down text-danger"></i>&nbsp;<span class="text-12">{{
+                                        solution.disLikes }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="answer">
+                            <!-- answers -->
+                            <p class="text-12">{{ solution.answer }}</p>
+                        </div>
+                        <div>
+                            <label class="container-checkbox text-small">Mark as best solution
+                                <input type="checkbox" [checked]="solution.bestSolution" name="markAsBest"
+                                    [disabled]="!isQuestionAskedBySameUser" (click)="checked($event, solution.id)">
+                                <span class="checkmark"
+                                    [ngClass]="{'cursor-not-allowed': !isQuestionAskedBySameUser}"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <!-- answers list end -->
+                <!-- new answer editor -->
+                <div class="ngx-editor-sm" *ngIf="editorSm">
+                    <div class="NgxEditor__Wrapper">
+                        <i class="fas fa-expand-alt enlarge-icon" (click)="toggleEditor()"></i>
+                        <ngx-editor [editor]="editor" [(ngModel)]="html" [placeholder]="placeholder"></ngx-editor>
+                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                        <i class="fas fa-paper-plane btn-send" (click)="submitSolution()"></i>
+                    </div>
+                </div>
+                <div class="ngx-editor-lg" *ngIf="!editorSm">
+                    <div class="NgxEditor__Wrapper">
+                        <div class="shrink-icon">
+                            <i class="fas fa-compress-alt" (click)="toggleEditor()"></i>
+                        </div>
+                        <ngx-editor [editor]="editor" [(ngModel)]="html" [placeholder]="placeholder"></ngx-editor>
+                        <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"> </ngx-editor-menu>
+                        <i class="fas fa-paper-plane btn-send" (click)="submitSolution()"></i>
+                    </div>
+                </div>
+                <!-- new answer editor end -->
+            </div>
+            <div *ngIf="!activeQuestion">
+                <!-- Display select question to view -->
+                <div class="text-center mt-5">
+                    <i class="fas fa-3x fa-arrow-left text-faded mb-3"></i>
+                    <h5 class="text-faded">Click on a question to see all the details</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- questions list end -->
+</div>

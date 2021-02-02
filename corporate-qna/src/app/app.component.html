@@ -1,0 +1,57 @@
+<nav class="top-nav d-flex justify-content-between w-100 fixed-top">
+  <div class="d-flex">
+    <div class="keka-logo">
+      <img src="/assets/images/logo.svg" alt="Keka-logo">
+    </div>
+  </div>
+  <div class="d-flex text-light align-items-center">
+    <span>{{ todayDate | date }}</span>
+    <!-- dropdown start -->
+    <div class="dropdown" *ngIf="userdata">
+      <button class="dropbtn">
+        <i class="far fa-sun px-3" style="line-height: inherit"></i>
+        <span *ngIf="userdata">
+          <span style="padding-right: 1rem;">{{ name }}</span>
+          <img class="profile-pic" src="https://i.pravatar.cc/50" alt="user-image">
+        </span>
+      </button>
+      <div class="dropdown-content">
+        <a href="#">Username: {{ userdata?.username }}</a>
+        <a href="#">Designation: {{ userdata?.designation }}</a>
+        <a (click)="logout()">Logout</a>
+      </div>
+    </div>
+    <!-- dropdown end -->
+    <span *ngIf="!userdata">
+      <a class="btn btn-transparent" (click)="login()">Login</a>
+    </span>
+  </div>
+</nav>
+<div class="main-container">
+  <nav class="left-nav">
+    <ul class="navbar-nav w-100">
+      <li class="d-block">
+        <a class="nav-item text-light text-decoration-none active" routerLink="/" routerLinkActive="active">
+          <i class="far fa-comments d-block text-align-center"></i>
+          <span class="d-block text-align-center">Forum</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  <div class="app-container bg-light" >
+    <ul class="nav">
+      <li>
+        <a routerLink="/qna/home" routerLinkActive="active-link">HOME</a>
+      </li>
+      <li>
+        <a routerLink="/qna/categories" routerLinkActive="active-link">CATEGORIES</a>
+      </li>
+      <li>
+        <a routerLink="/qna/users" routerLinkActive="active-link">USERS</a>
+      </li>
+    </ul>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

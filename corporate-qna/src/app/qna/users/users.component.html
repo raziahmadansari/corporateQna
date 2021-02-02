@@ -1,0 +1,50 @@
+<div class="container-fluid bottom-shadow">
+    <div class="filter-bar">
+        <div class="d-flex align-items-end">
+            <div class="filter">
+                <p class="filter-title">Users</p>
+                <span class="searchbox">
+                    <input #userSearchInput type="text" placeholder="Search">
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- user list -->
+<div class="d-flex flex-wrap p-2">
+    <div class="keka-user-card" *ngFor="let user of users" (click)="userDetails(user.id)">
+        <div class="keka-user-card-header">
+            <div class="keka-user-card-pic">
+                <img class="profile-pic-xl" src="https://i.pravatar.cc/50" alt="user-image">
+            </div>
+            <div class="keka-user-card-info">
+                <h5 class="mb-1 text-14">{{ user.name }}</h5>
+                <p class="m-0 text-12 text-faded">{{ user.designation }} - {{ user.team }}</p>
+                <p class="mb-2 text-12 text-faded">{{ user.category }}, {{ user.location }}</p>
+                <div class="like-dislike-panel mb-2">
+                    <span class="pr-2 like-button">
+                        <i class="fas fa-thumbs-up text-green"></i>&nbsp;<span class="text-12">{{ user.likes }}</span>
+                    </span>
+                    <span class="dislike-button">
+                        <i style="transform: scaleX(-1);" class="fas fa-thumbs-down text-danger"></i>&nbsp;<span
+                            class="text-12">{{ user.dislikes }}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="keka-user-card-footer">
+            <div class="py-2">
+                <h6 class="text-center mb-1 font-weight-light">{{ user.questionsAsked }}</h6>
+                <p class="text-center text-12 text-faded mb-1">Questions Asked</p>
+            </div>
+            <div class="border-right border-left py-2">
+                <h6 class="text-center mb-1 font-weight-light">{{ user.questionsAnswered }}</h6>
+                <p class="text-center text-12 text-faded mb-1">Questions Answered</p>
+            </div>
+            <div class="py-2">
+                <h6 class="text-center mb-1 font-weight-light">{{ user.questionsSolved }}</h6>
+                <p class="text-center text-12 text-faded mb-1">Questions Solved</p>
+            </div>
+        </div>
+    </div>
+</div>
