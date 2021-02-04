@@ -10,131 +10,84 @@ using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
+    [Authorize]
+    [Route("api/[Controller]")]
     [ApiController]
     public class HomeController : Controller
     {
-        public IUserHandler UserHandler { get; }
-        public ICategoryService CategoryService { get; }
         public IQuestionService QuestionService { get; }
         public ISolutionService SolutionService { get; }
 
-        public HomeController(IUserHandler userHandler, ICategoryService categoryService, IQuestionService questionService, ISolutionService solutionService)
+        public HomeController(IQuestionService questionService, ISolutionService solutionService)
         {
-            UserHandler = userHandler;
-            CategoryService = categoryService;
             QuestionService = questionService;
             SolutionService = solutionService;
         }
 
-        [Route("/")]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return new JsonResult(new { Message = "This is Api" });
         }
 
-        [Authorize]
-        [Route("/secret")]
+        [Route("secret")]
         public IActionResult Secret()
         {
             return new JsonResult(new { Message = "super secret data from api" });
         }
-
-        [Authorize]
-        [Route("/verifyuser")]
-        [HttpPost]
-        public object VerifyUser([FromBody] UserDetails userDetails)
-        {
-            var userId = UserHandler.VerifyUser(userDetails);
-            return new { userId };
-        }
-
-        [Authorize]
-        [Route("/addcategory")]
-        [HttpPost]
-        public void AddCategory([FromBody] Category category)
-        {
-            CategoryService.Add(category);
-        }
-
-        [Route("/categories")]
-        public List<CategoryDetailsViewModel> Categories()
-        {
-            return CategoryService.Categories();
-        }
-
-        [Authorize]
-        [Route("/submitquestion")]
-        [HttpPost]
+        
+        [HttpPost, Route("submitquestion")]
         public void SubmitQuestion([FromBody] NewQuestion newQuestion)
         {
             QuestionService.AddQuestion(newQuestion);
         }
 
-        [Route("/questions")]
+        [AllowAnonymous]
+        [Route("questions")]
         public List<QuestionDetailsViewModel> Questions()
         {
             return QuestionService.Questions();
         }
 
-        [Authorize]
-        [Route("/submitsolution")]
-        [HttpPost]
+        [HttpPost, Route("submitsolution")]
         public void SubmitSolution([FromBody] Solution solution)
         {
             this.SolutionService.Submit(solution);
         }
 
-        [Route("/solutions/{id}")]
+        [AllowAnonymous]
+        [Route("solutions/{id}")]
         public List<SolutionDetailsViewModel> Solutions(int Id)
         {
             return SolutionService.Solutions(Id);
         }
 
-        [Authorize]
-        [Route("/upvote")]
-        [HttpPost]
+        [HttpPost, Route("upvote")]
         public void Upvote([FromBody] QuestionUpvote questionUpvote)
         {
             QuestionService.Upvote(questionUpvote);
         }
 
-        [Authorize]
-        [Route("/view")]
-        [HttpPost]
+        [HttpPost, Route("view")]
         public void View([FromBody] QuestionView questionView)
         {
             QuestionService.View(questionView);
         }
 
-        [Authorize]
-        [Route("/like")]
-        [HttpPost]
+        [HttpPost, Route("like")]
         public void Like([FromBody] LikeDislike likeDislike)
         {
             SolutionService.Like(likeDislike);
         }
 
-        [Authorize]
-        [Route("markbest")]
-        [HttpPost]
+        [HttpPost, Route("markbest")]
         public void MarkBest([FromBody] MarkBestSolution markBestSolution)
         {
             SolutionService.MarkBest(markBestSolution);
         }
 
-        [Route("/userdetails")]
-        public List<UserDetailsViewModel> UserDetails()
-        {
-            return UserHandler.UserDetails();
-        }
-
-        [Route("/userdetail/{id}")]
-        public UserDetailsViewModel UserDetail(int Id)
-        {
-            return UserHandler.UserDetail(Id);
-        }
-
-        [Route("/questionsansweredbyuser/{id}")]
+        [AllowAnonymous]
+        [Route("questionsansweredbyuser/{id}")]
         public List<AnsweredQuestionDetailsViewModel> QuestionsAnsweredByUser(int Id)
         {
             return QuestionService.QuestionsAnsweredByUser(Id);
