@@ -11,14 +11,14 @@ namespace Core.Services
     {
         private Database Db { get; }
 
-        public CategoryService(Database database)
+        public CategoryService()
         {
-            Db = database;
+            Db = DbService.Db;
         }
 
         public void Add(Category category)
         {
-            var categoryExists = Db.FirstOrDefault<Models.DataModels.Category>("select * from [Categories] where [Name]=@0", category.Name);
+            var categoryExists = Db.FirstOrDefault<Models.DataModels.Category>("WHERE [Name] = @0", category.Name);
             if (categoryExists == null)
             {
                 var newCategory = new Models.DataModels.Category
@@ -32,7 +32,7 @@ namespace Core.Services
 
         public List<CategoryDetailsViewModel> Categories()
         {
-            return Db.Fetch<CategoryDetailsViewModel>("select * from [CategoryDetails]");
+            return Db.Fetch<CategoryDetailsViewModel>("SELECT * FROM [CategoryDetails]");
         }
     }
 }

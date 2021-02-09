@@ -7,25 +7,25 @@ using System.Text;
 
 namespace Core.Services
 {
-    public class UserHandler : IUserHandler
+    public class UserService : IUserService
     {
         private Database Db { get; }
 
-        public UserHandler(Database database)
+        public UserService()
         {
-            Db = database;
+            Db = DbService.Db;
         }
 
         public int VerifyUser(UserDetails userDetails)
         {
-            var user = Db.FirstOrDefault<Models.DataModels.UserDetails>("select * from [Users] where[Username]=@0", userDetails.Username);
+            var user = Db.FirstOrDefault<Models.DataModels.User>("WHERE [Username] = @0", userDetails.Username);
             
             if (user != null)
             {
                 return user.Id;
             }
 
-            user = new Models.DataModels.UserDetails
+            user = new Models.DataModels.User
             {
                 Username = userDetails.Username,
                 Name = userDetails.Name,
@@ -36,19 +36,19 @@ namespace Core.Services
             };
 
             Db.Insert("Users", user);
-            user = Db.FirstOrDefault<Models.DataModels.UserDetails>("select * from [Users] where[Username]=@0", userDetails.Username);
+            user = Db.FirstOrDefault<Models.DataModels.User>("WHERE [Username] = @0", userDetails.Username);
             
             return user.Id;
         }
 
         public List<UserDetailsViewModel> UserDetails()
         {
-            return Db.Fetch<UserDetailsViewModel>("select * from [UserDetails]");
+            return Db.Fetch<UserDetailsViewModel>("SELECT * FROM [UserDetails]");
         }
 
         public UserDetailsViewModel UserDetail(int id)
         {
-            return Db.FirstOrDefault<UserDetailsViewModel>("select * from [UserDetails] where [Id]=@0", id);
+            return Db.FirstOrDefault<UserDetailsViewModel>("SELECT * FROM [UserDetails] WHERE [Id]=@0", id);
         }
     }
 }

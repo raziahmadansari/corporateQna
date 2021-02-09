@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Core.Services
 {
-    public interface IUserHandler
+    public interface IUserService
     {
         public int VerifyUser(UserDetails userDetails);
         public List<UserDetailsViewModel> UserDetails();

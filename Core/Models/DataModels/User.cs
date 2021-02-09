@@ -7,7 +7,7 @@ namespace Core.Models.DataModels
 {
     [TableName("Users")]
     [PrimaryKey("Id")]
-    public class UserDetails
+    public class User
     {
         [Column]
         public int Id { get; set; }

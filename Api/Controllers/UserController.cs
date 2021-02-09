@@ -15,30 +15,30 @@ namespace Api.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        public IUserHandler UserHandler { get; }
+        public IUserService UserService { get; }
 
-        public UserController(IUserHandler userHandler)
+        public UserController(IUserService userService)
         {
-            UserHandler = userHandler;
+            UserService = userService;
         }
 
         [Authorize]
         [HttpPost, Route("verifyuser")]
         public object VerifyUser([FromBody] UserDetails userDetails)
         {
-            return new { userId = UserHandler.VerifyUser(userDetails) };
+            return new { userId = UserService.VerifyUser(userDetails) };
         }
 
         [Route("userdetails")]
         public List<UserDetailsViewModel> UserDetails()
         {
-            return UserHandler.UserDetails();
+            return UserService.UserDetails();
         }
 
         [Route("userdetail/{id}")]
         public UserDetailsViewModel UserDetail(int Id)
         {
-            return UserHandler.UserDetail(Id);
+            return UserService.UserDetail(Id);
         }
     }
 }

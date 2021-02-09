@@ -54,8 +54,8 @@ namespace Api
                        .AddControllerActivation();
             });
 
-            Container.Register<Database>(() => new Database(Configuration.GetConnectionString("CorporateQna"), "System.Data.SqlClient"), Lifestyle.Scoped);
-            Container.Register<IUserHandler, UserHandler>(Lifestyle.Scoped);
+            //Container.Register<Database>(() => new Database(Configuration.GetConnectionString("CorporateQna"), "System.Data.SqlClient"), Lifestyle.Scoped);
+            Container.Register<IUserService, UserService>(Lifestyle.Scoped);
             Container.Register<ICategoryService, CategoryService>(Lifestyle.Scoped);
             Container.Register<IQuestionService, QuestionService>(Lifestyle.Scoped);
             Container.Register<ISolutionService, SolutionService>(Lifestyle.Scoped);

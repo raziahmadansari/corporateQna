@@ -7,7 +7,7 @@ namespace Core.Models.DataModels
 {
     [TableName("LikeDislike")]
     [PrimaryKey("Id")]
-    public class LikeDislike
+    public class LikeState
     {
         [Column]
         public int Id { get; set; }

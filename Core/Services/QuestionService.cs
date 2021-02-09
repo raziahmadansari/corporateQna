@@ -11,9 +11,9 @@ namespace Core.Services
     {
         private Database Db { get; }
 
-        public QuestionService(Database database)
+        public QuestionService()
         {
-            Db = database;
+            Db = DbService.Db;
         }
 
         public void AddQuestion(NewQuestion newQuestion)
@@ -32,12 +32,12 @@ namespace Core.Services
 
         public List<QuestionDetailsViewModel> Questions()
         {
-            return Db.Fetch<QuestionDetailsViewModel>("select * from [QuestionDetails]");
+            return Db.Fetch<QuestionDetailsViewModel>("SELECT * FROM [QuestionDetails]");
         }
 
         public void Upvote(QuestionUpvote questionUpvote)
         {
-            var voteExists = Db.FirstOrDefault<Models.DataModels.QuestionUpvote>("select * from [QuestionUpVotes] where [UserId]=@0 AND [QuestionId]=@1", questionUpvote.UserId, questionUpvote.QuestionId);
+            var voteExists = Db.FirstOrDefault<Models.DataModels.QuestionUpvote>("WHERE [UserId] = @0 AND [QuestionId] = @1", questionUpvote.UserId, questionUpvote.QuestionId);
             if (voteExists == null)
             {
                 var newVote = new Models.DataModels.QuestionUpvote
@@ -51,7 +51,7 @@ namespace Core.Services
 
         public void View(QuestionView questionView)
         {
-            var userViewed = Db.FirstOrDefault<Models.DataModels.QuestionView>("select * from [QuestionViews] where [UserId]=@0 AND [QuestionId]=@1", questionView.UserId, questionView.QuestionId);
+            var userViewed = Db.FirstOrDefault<Models.DataModels.QuestionView>("WHERE [UserId] = @0 AND [QuestionId] = @1", questionView.UserId, questionView.QuestionId);
             if (userViewed == null)
             {
                 var view = new Models.DataModels.QuestionView
@@ -65,7 +65,7 @@ namespace Core.Services
 
         public List<AnsweredQuestionDetailsViewModel> QuestionsAnsweredByUser(int id)
         {
-            return Db.Fetch<AnsweredQuestionDetailsViewModel>("select * from [AnsweredQuestionDetails] where [AnsweredBy]=@0", id);
+            return Db.Fetch<AnsweredQuestionDetailsViewModel>("SELECT * FROM [AnsweredQuestionDetails] WHERE [AnsweredBy] = @0", id);
         }
     }
 }
